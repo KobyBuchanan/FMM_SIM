@@ -1,0 +1,50 @@
+# Configure (only needed after changing CMakeLists.txt / vcpkg.json / presets)
+cmake --preset default
+
+# Build (do this every time you change source code)
+cmake --build build
+
+# Run
+./build/<executable_name>
+
+# Clean rebuild from scratch (if things get weird/stale)
+rm -rf build
+cmake --preset default
+cmake --build build
+
+# Search vcpkg for a library
+vcpkg search <name>
+
+suggested cmake structure
+
+cmake_minimum_required(VERSION 3.22)
+project(hello_vcpkg CXX)
+
+# --- Project-wide settings ---
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # keeps IntelliSense happy
+
+# --- Dependencies (vcpkg-managed) ---
+find_package(fmt CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+
+# --- Sources ---
+set(SOURCES
+    src/main.cpp
+    src/foo.cpp
+    src/bar.cpp
+)
+
+# --- Target ---
+add_executable(hello_vcpkg ${SOURCES})
+
+target_include_directories(hello_vcpkg PRIVATE src)
+
+target_link_libraries(hello_vcpkg PRIVATE
+    fmt::fmt
+    nlohmann_json::nlohmann_json
+    Boost::system
+    Boost::filesystem
+)

@@ -1,0 +1,10 @@
+{
+  "name": "fmm-sim",
+  "version": "0.1.0",
+  "dependencies": [
+    {
+        "name": "sfml",
+        "features": ["window","graphics"]
+    }
+  ]
+}
