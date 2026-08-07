@@ -6,3 +6,6 @@ vcpkg_installed/
 
 # IDE/editor
 .vscode/
+
+# My Notes
+helper.txt

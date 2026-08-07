@@ -21,9 +21,7 @@ int main()
         window.clear();
 
         // set the shape
-        for (int i = 0; i < 5; i++) {
 
-        }
         sf::CircleShape shape(50.f);
         shape.setFillColor(sf::Color(100, 250, 50));
         shape.setPosition(sf::Vector2f(400,300));
