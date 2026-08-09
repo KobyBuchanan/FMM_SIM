@@ -7,7 +7,7 @@ struct Object {
     //Intial values
     sf::Vector2f position = {0.0f,0.0f};
     sf::Color color = sf::Color::Red;
-    float radius = 15.f;
+    float radius = 5.f;
     //Intial physics
     sf::Vector2f velocity {0.0f,0.0f};
     sf::Vector2f acceleration {0.0f,0.0f};

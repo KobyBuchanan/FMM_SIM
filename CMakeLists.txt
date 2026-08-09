@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCES
     src/main.cpp
     src/quadtree.cpp
+    src/physics.cpp
 )
 
 find_package(SFML CONFIG REQUIRED COMPONENTS System Window Graphics)

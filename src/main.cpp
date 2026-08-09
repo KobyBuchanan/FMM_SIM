@@ -2,6 +2,7 @@
 #include "object.hpp"
 #include "constants.hpp"
 #include "quadtree.hpp"
+#include "physics.hpp"
 #include <vector>
 #include <random>
 
@@ -71,7 +72,11 @@ int main()
         //physics
         for (auto& obj : Objects) {
             obj.update(dt);
+            if (ENABLE_WALL_COLLISION) {
+            resolveBoundary(obj, worldBounds);
         }
+        }
+        
         //rebuild quadtree
         Quadtree tree = buildQuadtree(Objects, worldBounds);
         //draw
@@ -81,7 +86,7 @@ int main()
         }
 
         //quadtree overlay
-        drawQuadtree(window,tree,tree.root,worldBounds);
+        //drawQuadtree(window,tree,tree.root,worldBounds);
 
         window.display();
     }

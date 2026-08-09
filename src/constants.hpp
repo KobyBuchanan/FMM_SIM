@@ -3,6 +3,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-#define NMB_OBJECT 100
+#define NMB_OBJECT 1000
+#define ENABLE_WALL_COLLISION true
 
 #endif
