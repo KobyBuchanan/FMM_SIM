@@ -16,8 +16,7 @@ node_id build_impl(Quadtree& tree, const std::vector<Object>& objects,
 
     std::size_t count = static_cast<std::size_t>(end - begin);
 
-    // stop: few enough particles for a leaf, or hit max depth (guards against
-    // near-duplicate positions causing endless subdivision)
+    
     if (count <= MAX_OBJECTS_PER_LEAF || depth >= MAX_QUADTREE_DEPTH) {
         return result;
     }
@@ -66,7 +65,7 @@ Quadtree buildQuadtree(const std::vector<Object>& objects, const sf::FloatRect& 
     tree.root = build_impl(tree, objects, bounds,
                             tree.indices.begin(), tree.indices.end(), 0);
 
-    tree.nodeObjectsBegin.push_back(static_cast<std::uint32_t>(tree.indices.size())); // sentinel
+    tree.nodeObjectsBegin.push_back(static_cast<std::uint32_t>(tree.indices.size()));
 
     return tree;
 }

@@ -71,14 +71,19 @@ int main()
         
         //physics
         for (auto& obj : Objects) {
-            obj.update(dt);
-            if (ENABLE_WALL_COLLISION) {
-            resolveBoundary(obj, worldBounds);
+            obj.update(dt);  
         }
+
+        Quadtree tree = buildQuadtree(Objects, worldBounds);
+        resolveCollisions(Objects, tree);
+
+        for (auto& obj : Objects) {
+            if (ENABLE_WALL_COLLISION) {
+                resolveBoundary(obj, worldBounds);
+            }
         }
         
-        //rebuild quadtree
-        Quadtree tree = buildQuadtree(Objects, worldBounds);
+
         //draw
         window.clear();
         for (auto& obj : Objects) {
@@ -86,7 +91,7 @@ int main()
         }
 
         //quadtree overlay
-        //drawQuadtree(window,tree,tree.root,worldBounds);
+        drawQuadtree(window,tree,tree.root,worldBounds);
 
         window.display();
     }
