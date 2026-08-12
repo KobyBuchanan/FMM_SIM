@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <cstdint>
-#include "object.hpp"
+#include "object/object.hpp"
 
 
 using node_id = std::uint32_t;

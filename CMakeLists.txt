@@ -7,9 +7,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SOURCES
     src/main.cpp
-    src/quadtree.cpp
-    src/physics.cpp
-    src/hud.cpp
+    src/quadtree/quadtree.cpp
+    src/physics/physics.cpp
+    src/hud/hud.cpp
+    src/utils/debug_tools.cpp
 )
 
 find_package(SFML CONFIG REQUIRED COMPONENTS System Window Graphics)

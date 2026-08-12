@@ -1,12 +1,16 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include "hud.hpp"
-#include "constants.hpp"
+#include "utils/debug_tools.hpp"
 #include <iostream>
 
-float f = 0.f;
 
-void MyGui::RenderGui() {
+
+void MyGui::RenderGui(sf::RenderWindow& window, const Quadtree& tree, sf::FloatRect worldBounds) {
+    //local variables
+    float f = 0.f;
+    static bool render_quadtree = false;
+    //menus
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("Menu")) {
         if (ImGui::MenuItem("New")) {}
@@ -24,11 +28,19 @@ void MyGui::RenderGui() {
     }
     if (ImGui::BeginMenu("debug tools")) {
         if (ImGui::MenuItem("WALL_COLLISION_TOGGLE")) {
-        ENABLE_WALL_COLLISION = !ENABLE_WALL_COLLISION;
+            wall_collision_toggle();
         }
+        if (ImGui::MenuItem("DRAW_QUADTREE_TOGGLE")) {
+            render_quadtree = !render_quadtree;
+        }
+
         ImGui::EndMenu(); 
     }
 
     ImGui::EndMainMenuBar();
-
+    //render over windo not gui
+    if (render_quadtree) {
+        drawQuadtree(window, tree, tree.root, worldBounds);
+    }
 }
+
