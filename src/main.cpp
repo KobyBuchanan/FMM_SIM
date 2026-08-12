@@ -3,8 +3,12 @@
 #include "constants.hpp"
 #include "quadtree.hpp"
 #include "physics.hpp"
+#include "hud.hpp"
 #include <vector>
 #include <random>
+#include <imgui.h>
+#include <imgui-SFML.h>
+#include <iostream>
 
 //random distrabution for now, will be replaced with DM Halo distrabution later
 std::random_device rd;
@@ -21,7 +25,7 @@ void drawQuadtree(sf::RenderWindow& window, const Quadtree& tree,
     sf::RectangleShape rect({bounds.size.x, bounds.size.y});
     rect.setPosition(bounds.position);
     rect.setFillColor(sf::Color::Transparent);
-    rect.setOutlineColor(sf::Color(0, 255, 0, 120)); // translucent green
+    rect.setOutlineColor(sf::Color(0,0,255, 120)); // translucent blue
     rect.setOutlineThickness(1.f);
     window.draw(rect);
 
@@ -45,7 +49,14 @@ void drawQuadtree(sf::RenderWindow& window, const Quadtree& tree,
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({800, 600}),"SFML window", sf::Style::Titlebar | sf::Style::Close);
-    
+
+    if (!ImGui::SFML::Init(window)) {
+    std::cerr << "Failed to initialize ImGui-SFML!" << std::endl;
+    return -1;
+    }
+    auto& io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();
+        
     std::vector<Object> Objects;
     Objects.reserve(NMB_OBJECT);
 
@@ -58,16 +69,25 @@ int main()
     sf::FloatRect worldBounds({0.f, 0.f}, {WINDOW_WIDTH, WINDOW_HEIGHT});
 
     sf::Clock clock;
+    bool Running = true;
     //Main loop
-    while (window.isOpen())
+    while (Running)
     {
         while (const std::optional event = window.pollEvent())
         {
+            ImGui::SFML::ProcessEvent(window, *event); 
             if (event->is<sf::Event::Closed>())
-                window.close();
+                Running = false;
         }   
 
+        if (!Running) 
+            break;
+
         float dt = clock.restart().asSeconds();
+
+        ImGui::SFML::Update(window, sf::seconds(dt)); 
+
+        MyGui::RenderGui();
         
         //physics
         for (auto& obj : Objects) {
@@ -91,10 +111,12 @@ int main()
         }
 
         //quadtree overlay
-        drawQuadtree(window,tree,tree.root,worldBounds);
-
+        //drawQuadtree(window,tree,tree.root,worldBounds);
+        ImGui::SFML::Render(window);
         window.display();
     }
 
+    ImGui::SFML::Shutdown();
+    window.close();
     return 0;
 }

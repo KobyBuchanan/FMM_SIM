@@ -5,6 +5,8 @@
     {
         "name": "sfml",
         "features": ["window","graphics"]
-    }
+    },
+
+    "imgui-sfml"
   ]
 }

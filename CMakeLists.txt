@@ -9,9 +9,12 @@ set(SOURCES
     src/main.cpp
     src/quadtree.cpp
     src/physics.cpp
+    src/hud.cpp
 )
 
 find_package(SFML CONFIG REQUIRED COMPONENTS System Window Graphics)
+find_package(ImGui-SFML CONFIG REQUIRED)
+
 add_executable(FMM_SIM ${SOURCES})
 target_include_directories(FMM_SIM PRIVATE src)
 
@@ -19,4 +22,5 @@ target_link_libraries(FMM_SIM PRIVATE
     SFML::System
     SFML::Window
     SFML::Graphics
+    ImGui-SFML::ImGui-SFML
 )

@@ -6,9 +6,8 @@
 struct Object {
     //Intial values
     sf::Vector2f position = {0.0f,0.0f};
-    sf::Vector2f last_position = {0.0f,0.0f};
     sf::Color color = sf::Color::Red;
-    float radius = 5.f;
+    float radius = 1.f;
     //Intial physics
     sf::Vector2f velocity {0.0f,0.0f};
     sf::Vector2f acceleration {0.0f,0.0f};
@@ -28,7 +27,6 @@ struct Object {
         }
 
     void update(float dt) {
-        last_position = position;
         velocity += acceleration * dt;
         position += velocity * dt;
        
