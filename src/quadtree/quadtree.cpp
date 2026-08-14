@@ -80,29 +80,29 @@ float computeMassRecurse(Quadtree& tree, std::vector<Object>& objects, node_id i
             total_mass += obj.mass;
             weighted_position += obj.mass * obj.position;
         }
-
+   
         tree.nodeMass[id] = total_mass;
         tree.NodeCenterOfMass[id] = (total_mass > 0.f) ? weighted_position / total_mass : sf::Vector2f{0.f, 0.f};
         return total_mass;
+     }
 
-        for (int y = 0; y < 2; ++y) {
-            for (int x = 0; x < 2; ++x) {
-                node_id child = tree.nodes[id].children[y][x];
-                if (child == null_node) continue;
+     float total_mass = 0.f;
+     sf::Vector2f weighted_position{0.f,0.f};
+
+    for (int y = 0; y < 2; ++y) {
+        for (int x = 0; x < 2; ++x) {
+            node_id child = tree.nodes[id].children[y][x];
+            if (child == null_node) continue;
                 
-                float childMass = computeMassRecurse(tree, objects, child);
-                total_mass += childMass;
-                weighted_position += childMass * tree.NodeCenterOfMass[child];
+            float childMass = computeMassRecurse(tree, objects, child);
+            total_mass += childMass;
+            weighted_position += childMass * tree.NodeCenterOfMass[child];
         }
     }
 
-        tree.nodeMass[id] = total_mass;
-        tree.NodeCenterOfMass[id] = (total_mass > 0.f) ? weighted_position / total_mass : sf::Vector2f{0.f, 0.f};
-        return total_mass;
-    }
-
-    float total_mass = 0.f;
-    sf::Vector2f weighted_position{0.f,0.f};
+    tree.nodeMass[id] = total_mass;
+    tree.NodeCenterOfMass[id] = (total_mass > 0.f) ? weighted_position / total_mass : sf::Vector2f{0.f, 0.f};
+    return total_mass;
 }
 
 void computeMassDistabution(Quadtree& tree, std::vector<Object>& objects) {
