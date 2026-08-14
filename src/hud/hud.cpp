@@ -6,10 +6,11 @@
 
 
 
-void MyGui::RenderGui(sf::RenderWindow& window, const Quadtree& tree, sf::FloatRect worldBounds) {
+void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, const Quadtree& tree, sf::FloatRect worldBounds) {
     //local variables
     float f = 0.f;
     static bool render_quadtree = false;
+    static bool render_confirmation_popUp = false;
     //menus
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("Menu")) {
@@ -33,14 +34,38 @@ void MyGui::RenderGui(sf::RenderWindow& window, const Quadtree& tree, sf::FloatR
         if (ImGui::MenuItem("DRAW_QUADTREE_TOGGLE")) {
             render_quadtree = !render_quadtree;
         }
-
+    
+        if(ImGui::MenuItem("CLEAR_OBJECTS")) {
+            render_confirmation_popUp = true;
+        }
+        
         ImGui::EndMenu(); 
     }
 
     ImGui::EndMainMenuBar();
-    //render over windo not gui
+    //render over window not gui
     if (render_quadtree) {
         drawQuadtree(window, tree, tree.root, worldBounds);
     }
+    if (render_confirmation_popUp) {
+        ImGui::OpenPopup("Confirm Deletion");
+        render_confirmation_popUp = false;
+    }
+    //pop up logic
+    if(ImGui::BeginPopupModal("Confirm Deletion", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Are you sure you want to delete this file?\nThis action cannot be undone.\n\n");
+        if (ImGui::Button("Yes, Delete", ImVec2(120, 0))) {
+            clearObjects(objects);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
 }
+
+
+
 

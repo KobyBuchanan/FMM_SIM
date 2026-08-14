@@ -9,18 +9,18 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <iostream>
-
-//random distrabution for now, will be replaced with DM Halo distrabution later
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_real_distribution<float> distX(0.f, WINDOW_WIDTH);
-std::uniform_real_distribution<float> distY(0.f, WINDOW_HEIGHT);
-std::uniform_real_distribution<float> Rvel(-25, 25);
-
+#include "generation_models/generator.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({800, 600}),"SFML window", sf::Style::Titlebar | sf::Style::Close);
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    
+    int centerX = (desktop.size.x - WINDOW_WIDTH) / 2;
+    int centerY = (desktop.size.y - WINDOW_HEIGHT) / 2;
+
+    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),"SFML window", sf::Style::Titlebar | sf::Style::Close);
+    sf::View cameraView(sf::FloatRect({0.f,0.f},{WINDOW_WIDTH,WINDOW_HEIGHT}));
+    window.setPosition(sf::Vector2i(centerX, centerY));
 
     if (!ImGui::SFML::Init(window)) {
     std::cerr << "Failed to initialize ImGui-SFML!" << std::endl;
@@ -29,16 +29,8 @@ int main()
     auto& io = ImGui::GetIO();
     io.Fonts->AddFontDefault();
         
-    std::vector<Object> Objects;
-    Objects.reserve(NMB_OBJECT);
-
-    for (int i = 0; i < NMB_OBJECT; i++) {
-        sf::Vector2f pos{distX(gen), distY(gen)};
-        sf::Vector2f vel{Rvel(gen),Rvel(gen)};
-        Objects.emplace_back(pos, vel);
-    }
-
     sf::FloatRect worldBounds({0.f, 0.f}, {WINDOW_WIDTH, WINDOW_HEIGHT});
+    auto Objects = generate<ISOSPHERE>(worldBounds);
 
     sf::Clock clock;
     bool Running = true;
@@ -50,6 +42,23 @@ int main()
             ImGui::SFML::ProcessEvent(window, *event); 
             if (event->is<sf::Event::Closed>())
                 Running = false;
+
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                //close window
+                //if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                //window.close();
+                //zoom in 
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
+                cameraView.zoom(0.9f);
+                //zoom out
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Down)
+                cameraView.zoom(1.1f);
+                //reset zoom
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Space)
+                cameraView.setSize({WINDOW_WIDTH,WINDOW_HEIGHT});
+
+            }   
         }   
 
         if (!Running) 
@@ -59,8 +68,10 @@ int main()
 
         ImGui::SFML::Update(window, sf::seconds(dt)); 
 
+
         //physics
         for (auto& obj : Objects) {
+            obj.acceleration += gravity;
             obj.update(dt);  
         }
 
@@ -75,12 +86,13 @@ int main()
         
 
         //draw
+        window.setView(cameraView);
         window.clear();
         for (auto& obj : Objects) {
             obj.draw(window);
         }
 
-        MyGui::RenderGui(window,tree,worldBounds);
+        MyGui::RenderGui(window,Objects,tree,worldBounds);
         
         ImGui::SFML::Render(window);
         window.display();

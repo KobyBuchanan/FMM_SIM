@@ -3,5 +3,5 @@
 #include "quadtree/quadtree.hpp"
 
 namespace MyGui {
-    void RenderGui(sf::RenderWindow& window, const Quadtree& tree, sf::FloatRect worldBounds);
+    void RenderGui(sf::RenderWindow& window, std::vector<Object>& objects, const Quadtree& tree, sf::FloatRect worldBounds);
 }

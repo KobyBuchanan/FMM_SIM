@@ -20,6 +20,8 @@ struct Quadtree {
     sf::FloatRect bounds;
     node_id root = null_node;
     std::vector<QuadtreeNode> nodes;
+    std::vector<float> nodeMass;
+    std::vector<sf::Vector2f> NodeCenterOfMass;
 
     std::vector<std::uint32_t> indices;
 

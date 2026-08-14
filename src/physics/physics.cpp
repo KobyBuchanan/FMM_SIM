@@ -45,7 +45,7 @@ void resolvePair(Object& obj1, Object& obj2) {
 
     float distance = std::sqrt(squared_distance);
     sf::Vector2f unitNormalVector = delta / distance;
-
+    
     //resolve overlap
     float overlap = min_distance - distance;
     obj1.position -= unitNormalVector * (overlap / 2.f);
@@ -100,5 +100,41 @@ void resolveCollisions(std::vector<Object>& objects, const Quadtree& tree) {
         float search_radius = 2.f * obj.radius;
     
         queryNode(objects,tree,tree.root,tree.bounds,objectIndex,obj.position,search_radius);
+    }
+}
+
+void queryForce(std::vector<Object>& objects, const Quadtree& tree, node_id id, sf::FloatRect bounds, std::uint32_t objectIndex) {
+    Object& obj = objects[objectIndex];
+    if(id == null_node) return;
+
+    if(tree.isLeaf(id)) return;
+    //construct child bounds
+    float midX = bounds.position.x + bounds.size.x / 2.f;
+    float midY = bounds.position.y + bounds.size.y / 2.f;
+    float halfW = bounds.size.x / 2.f;
+    float halfH = bounds.size.y / 2.f;
+
+    //near field check
+    float theta = 1.f; //needs to be aquared
+    sf::Vector2f delta = tree.NodeCenterOfMass[id] - obj.position;
+    float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
+
+    if((bounds.size.x * bounds.size.x) / squared_distance < theta *theta) {
+        
+    }
+
+
+    
+
+}
+
+void computeForces(std::vector<Object>& objects, const Quadtree& tree) {
+
+    for(std::uint32_t i = 0; i < tree.indices.size(); ++i) {
+        std::uint32_t objectIndex = tree.indices[i];
+        Object& obj = objects[objectIndex];
+        obj.acceleration = {0.f,0.f};
+
+        queryForce(objects, tree, tree.root, tree.bounds, objectIndex);
     }
 }

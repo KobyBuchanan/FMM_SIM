@@ -9,5 +9,7 @@ void resolveBoundary(Object& obj, const sf::FloatRect& bounds);
 
 void resolveCollisions(std::vector<Object>& objects, const Quadtree& tree);
 
+void computeForces(std::vector<Object>& objects, const Quadtree& tree);
+
 
 #endif

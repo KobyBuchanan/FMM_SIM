@@ -10,4 +10,6 @@ void drawQuadtree(sf::RenderWindow& window, const Quadtree& tree,
 
 void wall_collision_toggle();
 
+void clearObjects(std::vector<Object>& objects);
+
 #endif

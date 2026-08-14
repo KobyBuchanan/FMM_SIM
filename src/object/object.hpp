@@ -8,9 +8,10 @@ struct Object {
     sf::Vector2f position = {0.0f,0.0f};
     sf::Color color = sf::Color::Red;
     float radius = 1.f;
+    float mass;
     //Intial physics
     sf::Vector2f velocity {0.0f,0.0f};
-    sf::Vector2f acceleration {0.0f,0.0f};
+    sf::Vector2f acceleration {0.0f,0.f};
 
     sf::CircleShape circle;
 
@@ -29,6 +30,7 @@ struct Object {
     void update(float dt) {
         velocity += acceleration * dt;
         position += velocity * dt;
+        acceleration = {0.f,0.f};
        
     };
 
