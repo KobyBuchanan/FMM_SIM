@@ -1,4 +1,5 @@
 #include "physics.hpp"
+#include "utils/constants.hpp"
 #include <algorithm>
 #include <cmath>
 
@@ -107,25 +108,42 @@ void queryForce(std::vector<Object>& objects, const Quadtree& tree, node_id id, 
     Object& obj = objects[objectIndex];
     if(id == null_node) return;
 
-    if(tree.isLeaf(id)) return;
+    //near field check 
+    sf::Vector2f delta = tree.NodeCenterOfMass[id] - obj.position;
+    float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
+    float denom = std::pow(squared_distance, 1.5f);
+
+    if(squared_distance != 0.f && (bounds.size.x * bounds.size.x) / squared_distance < theta_BH * theta_BH) {
+        obj.acceleration += G * tree.nodeMass[id] * delta / denom;
+        return;
+    }
+
+    if(tree.isLeaf(id)) {
+        for (auto i = tree.nodeObjectsBegin[id]; i < tree.nodeObjectsBegin[id + 1]; ++i) {
+            std::uint32_t otherIndex = tree.indices[i];
+            if (otherIndex <= objectIndex) continue;
+            sf::Vector2f delta = objects[otherIndex].position - obj.position;
+            float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
+            if (squared_distance == 0.f) continue;
+            float denom = std::pow(squared_distance, 1.5f);
+            obj.acceleration += G * objects[otherIndex].mass * delta / denom;
+            return;
+        }
+    }
+    
     //construct child bounds
     float midX = bounds.position.x + bounds.size.x / 2.f;
     float midY = bounds.position.y + bounds.size.y / 2.f;
     float halfW = bounds.size.x / 2.f;
     float halfH = bounds.size.y / 2.f;
 
-    //near field check
-    float theta = 1.f; //needs to be aquared
-    sf::Vector2f delta = tree.NodeCenterOfMass[id] - obj.position;
-    float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
+    queryForce(objects, tree, tree.nodes[id].children[0][0],{bounds.position, {halfW, halfH}}, objectIndex);
 
-    if((bounds.size.x * bounds.size.x) / squared_distance < theta *theta) {
-        
-    }
+    queryForce(objects, tree, tree.nodes[id].children[0][1],{{midX, bounds.position.y}, {halfW, halfH}}, objectIndex);
 
+    queryForce(objects, tree, tree.nodes[id].children[1][0],{{bounds.position.x, midY}, {halfW, halfH}}, objectIndex);
 
-    
-
+    queryForce(objects, tree, tree.nodes[id].children[1][1],{{midX, midY}, {halfW, halfH}}, objectIndex);
 }
 
 void computeForces(std::vector<Object>& objects, const Quadtree& tree) {

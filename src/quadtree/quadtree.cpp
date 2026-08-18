@@ -76,7 +76,7 @@ float computeMassRecurse(Quadtree& tree, std::vector<Object>& objects, node_id i
         sf::Vector2f weighted_position{0.f,0.f};
 
         for(int i = tree.nodeObjectsBegin[id]; i < tree.nodeObjectsBegin[id + 1]; ++i) {
-            const Object obj = objects[tree.indices[id]];
+            const Object obj = objects[tree.indices[i]];
             total_mass += obj.mass;
             weighted_position += obj.mass * obj.position;
         }

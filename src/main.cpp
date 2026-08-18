@@ -70,15 +70,14 @@ int main()
 
 
         //physics
-        for (auto& obj : Objects) {
-            obj.acceleration += gravity;
-            obj.update(dt);  
-        }
-
         Quadtree tree = buildQuadtree(Objects, worldBounds);
+        computeMassDistabution(tree, Objects);
+        computeForces(Objects,tree);
+        //std::cout << "accel[0] = " << Objects[0].acceleration.x << ", " << Objects[0].acceleration.y << "\n";
         resolveCollisions(Objects, tree);
 
         for (auto& obj : Objects) {
+            obj.update(dt);  
             if (ENABLE_WALL_COLLISION) {
                 resolveBoundary(obj, worldBounds);
             }

@@ -35,5 +35,7 @@ struct Quadtree {
 // bounds is fixed; any particle outside it is skipped and not inserted into the tree
 Quadtree buildQuadtree(const std::vector<Object>& objects, const sf::FloatRect& bounds);
 
+void computeMassDistabution(Quadtree& tree, std::vector<Object>& objects);
+
 
 #endif

@@ -22,7 +22,8 @@ std::vector<Object> generate(const sf::FloatRect& bounds) {
         Object obj;
         obj.mass = model.particle_mass;
         obj.position = { halfW + model.x[i] * SCALE, halfH - model.y[i] * SCALE };
-        obj.velocity = { model.X_velocity[i] , -model.Y_velocity[i] };
+        obj.velocity = { 0 , 0};
+        //obj.velocity = { model.X_velocity[i] , -model.Y_velocity[i]};
         objects.push_back(obj);
     }
     return objects;

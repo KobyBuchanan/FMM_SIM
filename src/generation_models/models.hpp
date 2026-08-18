@@ -14,10 +14,15 @@ struct ISOSPHERE {
     std::vector<float> x, y, z;
     //veloctiy vectors
     std::vector<float> X_velocity, Y_velocity;
-    //velocity dispersion
-    const float disp = 1 /std::sqrt(3); //values from other project (see simple dark matter halos)
     //assign particle masses
-    float particle_mass;
+    float particle_mass = 1.f;
+    //calculate rho_0
+    //float rho_0 = (particle_mass * NMB_OBJECT) / (4 * static_cast<float>(M_PI) * SCALE);
+    //v_circ
+    float v_circ_squared = G * particle_mass * NMB_OBJECT / SCALE;
+    //velocity dispersion
+    const float disp = std::sqrt(v_circ_squared) /std::sqrt(3); //values from other project (see simple dark matter halos)
+    
 
     size_t size() const {return x.size();}
 
@@ -27,7 +32,6 @@ struct ISOSPHERE {
 
     private:
         void populate_vectors(int NMB_PARTICLE, unsigned seed = std::random_device{}()) {
-            particle_mass = 1.f / NMB_PARTICLE;
             x.resize(NMB_PARTICLE);
             y.resize(NMB_PARTICLE); 
             z.resize(NMB_PARTICLE);
