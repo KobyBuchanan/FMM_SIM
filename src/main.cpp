@@ -76,6 +76,14 @@ int main()
         //std::cout << "accel[0] = " << Objects[0].acceleration.x << ", " << Objects[0].acceleration.y << "\n";
         resolveCollisions(Objects, tree);
 
+        //test cicle
+        sf::CircleShape circle(300.f);
+        circle.setFillColor(sf::Color::Transparent);
+        circle.setOutlineColor(sf::Color::White);
+        circle.setOutlineThickness(2.f);
+        circle.setOrigin({300.f, 300.f}); // Center the origin if needed
+        circle.setPosition({400.f, 400.f});
+
         for (auto& obj : Objects) {
             obj.update(dt);  
             if (ENABLE_WALL_COLLISION) {
@@ -90,6 +98,8 @@ int main()
         for (auto& obj : Objects) {
             obj.draw(window);
         }
+
+        window.draw(circle);
 
         MyGui::RenderGui(window,Objects,tree,worldBounds);
         

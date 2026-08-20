@@ -15,7 +15,7 @@ struct ISOSPHERE {
     //veloctiy vectors
     std::vector<float> X_velocity, Y_velocity;
     //assign particle masses
-    float particle_mass = 1.f;
+    float particle_mass = 1.f / NMB_OBJECT;
     //calculate rho_0
     //float rho_0 = (particle_mass * NMB_OBJECT) / (4 * static_cast<float>(M_PI) * SCALE);
     //v_circ
