@@ -32,7 +32,14 @@ int main()
     sf::FloatRect worldBounds({0.f, 0.f}, {WINDOW_WIDTH, WINDOW_HEIGHT});
     auto Objects = generate<ISOSPHERE>(worldBounds);
 
+    const int frame_rate = 60;
+    window.setFramerateLimit(frame_rate);
+
+    const double dt = 1.f / 60.f;
+    const float MAX_FRAME_TIME = 0.25f;
     sf::Clock clock;
+    float accumulator = 0.f;
+
     bool Running = true;
     //Main loop
     while (Running)
@@ -64,34 +71,33 @@ int main()
         if (!Running) 
             break;
 
-        float dt = clock.restart().asSeconds();
+        float frameTime = clock.restart().asSeconds();
+        accumulator += std::min(frameTime, MAX_FRAME_TIME);
 
-        ImGui::SFML::Update(window, sf::seconds(dt)); 
+        Quadtree tree;
 
-
-        //physics
-        Quadtree tree = buildQuadtree(Objects, worldBounds);
-        computeMassDistabution(tree, Objects);
-        computeForces(Objects,tree);
-        //std::cout << "accel[0] = " << Objects[0].acceleration.x << ", " << Objects[0].acceleration.y << "\n";
-        resolveCollisions(Objects, tree);
-
-        //test cicle
-        sf::CircleShape circle(300.f);
-        circle.setFillColor(sf::Color::Transparent);
-        circle.setOutlineColor(sf::Color::White);
-        circle.setOutlineThickness(2.f);
-        circle.setOrigin({300.f, 300.f}); // Center the origin if needed
-        circle.setPosition({400.f, 400.f});
-
-        for (auto& obj : Objects) {
-            obj.update(dt);  
-            if (ENABLE_WALL_COLLISION) {
-                resolveBoundary(obj, worldBounds);
+        while (accumulator >= dt) {
+            //physics
+            tree = buildQuadtree(Objects, worldBounds);
+            computeMassDistabution(tree, Objects);
+            computeForces(Objects,tree);
+            
+            if(ENABLE_PARTICLE_COLLISION) {
+                resolveCollisions(Objects, tree);
             }
-        }
-        
 
+            for (auto& obj : Objects) {
+                obj.update(dt);  
+                if (ENABLE_WALL_COLLISION) {
+                    resolveBoundary(obj, worldBounds);
+                }
+            }
+
+            accumulator -= dt;
+        }
+
+         
+        ImGui::SFML::Update(window, sf::seconds(frameTime));
         //draw
         window.setView(cameraView);
         window.clear();
@@ -99,10 +105,7 @@ int main()
             obj.draw(window);
         }
 
-        window.draw(circle);
-
         MyGui::RenderGui(window,Objects,tree,worldBounds);
-        
         ImGui::SFML::Render(window);
         window.display();
     }

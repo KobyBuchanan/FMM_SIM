@@ -111,7 +111,7 @@ void queryForce(std::vector<Object>& objects, const Quadtree& tree, node_id id, 
     //near field check 
     sf::Vector2f delta = tree.NodeCenterOfMass[id] - obj.position;
     float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
-    float denom = std::pow(squared_distance + softening_squared, 1.5f);
+    float denom = std::pow(squared_distance + softening * softening, 1.5f);
     if(squared_distance != 0.f && (bounds.size.x * bounds.size.x) / squared_distance < theta_BH * theta_BH) {
         obj.acceleration += G * tree.nodeMass[id] * delta / denom;
         return;
@@ -123,7 +123,7 @@ void queryForce(std::vector<Object>& objects, const Quadtree& tree, node_id id, 
             sf::Vector2f delta = objects[otherIndex].position - obj.position;
             float squared_distance = (delta.x * delta.x) + (delta.y * delta.y);
             //if (squared_distance == 0.f) continue;
-            float denom = std::pow(squared_distance + softening_squared, 1.5f);
+            float denom = std::pow(squared_distance + softening * softening, 1.5f);
             obj.acceleration += G * objects[otherIndex].mass * delta / denom;
         }
     }

@@ -50,12 +50,26 @@ struct ISOSPHERE {
             float theta = std::acos(distCosTheta(rng));
             
             //convert to cartesien
-            x[i] = r * std::sin(theta) * std::cos(phi);
-            y[i] = r * std::sin(theta) * std::sin(phi);
+            x[i] = r * std::sin(theta) * std::cos(phi) * SCALE;
+            y[i] = r * std::sin(theta) * std::sin(phi) * SCALE;
             z[i] = r * std::cos(theta);
 
-            X_velocity[i] = distVel(rng);
-            Y_velocity[i] = distVel(rng);
+            float radius_px = std::sqrt(x[i] * x[i] + y[i] * y[i]);
+            float tangent_x = -y[i];
+            float tangent_y = x[i];
+
+            if (radius_px > 1e-5f) {
+                tangent_x /= radius_px;
+                tangent_y /= radius_px;
+            }
+            else {
+                tangent_x = tangent_y = 0.f;
+            }
+
+            float v_circ = std::sqrt(v_circ_squared);
+
+            X_velocity[i] = tangent_x * v_circ + distVel(rng);
+            Y_velocity[i] = tangent_y * v_circ + distVel(rng);
         }
 
             
@@ -66,6 +80,18 @@ struct ISOSPHERE {
 
 };
 
+
+struct SOLAR {
+    //position vectors
+    std::vector<float> x_sun, y_sun;
+    //veloctiy vectors
+    std::vector<float> X_velocity, Y_velocity;
+    //assign particle masses
+    float solarMass = 1000.f;
+    float earthMass = 10.f;
+    
+
+};
 
 
 

@@ -31,12 +31,21 @@ void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, con
         if (ImGui::MenuItem("WALL_COLLISION_TOGGLE")) {
             wall_collision_toggle();
         }
+        if (ImGui::MenuItem("PARTICLE_COLLISION_TOGGLE")) {
+            particle_collision_toggle();
+        }
         if (ImGui::MenuItem("DRAW_QUADTREE_TOGGLE")) {
             render_quadtree = !render_quadtree;
         }
     
         if(ImGui::MenuItem("CLEAR_OBJECTS")) {
             render_confirmation_popUp = true;
+        }
+
+        ImGui::Separator();
+        if (ImGui::BeginMenu("Gravity Slider")) {
+            ImGui::SliderFloat("Value", &G, 0.0f, 10000.0f);
+            ImGui::EndMenu();
         }
         
         ImGui::EndMenu(); 

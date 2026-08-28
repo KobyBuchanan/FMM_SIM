@@ -34,6 +34,10 @@ void wall_collision_toggle() {
     ENABLE_WALL_COLLISION = !ENABLE_WALL_COLLISION;
 };
 
+void particle_collision_toggle() {
+    ENABLE_PARTICLE_COLLISION = !ENABLE_PARTICLE_COLLISION;
+};
+
 void clearObjects(std::vector<Object>& objects) {
     objects.clear();
 };

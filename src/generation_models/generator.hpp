@@ -8,10 +8,9 @@
 #include <SFML/Graphics.hpp>
 
 template <typename Model>
-std::vector<Object> generate(const sf::FloatRect& bounds) {
+std::vector<Object> generate(const sf::FloatRect& bounds, int nmb_objects = NMB_OBJECT) {
     std::vector<Object> objects;
     objects.reserve(NMB_OBJECT);
-
     Model model(NMB_OBJECT);
 
     //center coortinates
@@ -21,9 +20,8 @@ std::vector<Object> generate(const sf::FloatRect& bounds) {
     for (size_t i = 0; i < model.size(); ++i) {
         Object obj;
         obj.mass = model.particle_mass;
-        obj.position = { halfW + model.x[i] * SCALE, halfH - model.y[i] * SCALE };
-        //obj.velocity = { 0 , 0};
-        obj.velocity = { model.X_velocity[i] , -model.Y_velocity[i]};
+        obj.position = { halfW + model.x[i], halfH - model.y[i]  };
+        obj.velocity = { model.X_velocity[i] , -model.Y_velocity[i] };
         objects.push_back(obj);
     }
     return objects;
