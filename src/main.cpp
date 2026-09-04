@@ -26,8 +26,9 @@ int main()
     std::cerr << "Failed to initialize ImGui-SFML!" << std::endl;
     return -1;
     }
-    auto& io = ImGui::GetIO();
-    io.Fonts->AddFontDefault();
+    //auto& io = ImGui::GetIO();
+    //io.Fonts->AddFontFromFileTTF("JetBrainsMono", 16.f);
+    //ImGui::SFML::UpdateFontTexture();
         
     sf::FloatRect worldBounds({0.f, 0.f}, {WINDOW_WIDTH, WINDOW_HEIGHT});
     auto Objects = generate<ISOSPHERE>(worldBounds);
@@ -73,6 +74,7 @@ int main()
 
         float frameTime = clock.restart().asSeconds();
         accumulator += std::min(frameTime, MAX_FRAME_TIME);
+        window.clear(sf::Color::Black);
 
         Quadtree tree;
 
@@ -105,7 +107,7 @@ int main()
             obj.draw(window);
         }
 
-        MyGui::RenderGui(window,Objects,tree,worldBounds);
+        MyGui::RenderGui(window,Objects,tree,worldBounds,frameTime);
         ImGui::SFML::Render(window);
         window.display();
     }

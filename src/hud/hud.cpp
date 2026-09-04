@@ -6,7 +6,7 @@
 
 
 
-void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, const Quadtree& tree, sf::FloatRect worldBounds) {
+void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, const Quadtree& tree, sf::FloatRect worldBounds, float frameTime) {
     //local variables
     float f = 0.f;
     static bool render_quadtree = false;
@@ -51,7 +51,11 @@ void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, con
         ImGui::EndMenu(); 
     }
 
+    //FPS Counter
+    ImGui::Text("FPS: %.1f", 1.f / frameTime);
+
     ImGui::EndMainMenuBar();
+
     //render over window not gui
     if (render_quadtree) {
         drawQuadtree(window, tree, tree.root, worldBounds);
@@ -60,6 +64,7 @@ void MyGui::RenderGui(sf::RenderWindow& window,std::vector<Object>& objects, con
         ImGui::OpenPopup("Confirm Deletion");
         render_confirmation_popUp = false;
     }
+    
     //pop up logic
     if(ImGui::BeginPopupModal("Confirm Deletion", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Are you sure you want to delete this file?\nThis action cannot be undone.\n\n");
